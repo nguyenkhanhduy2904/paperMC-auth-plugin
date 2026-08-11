@@ -1,0 +1,8 @@
+name: MinecraftAuth
+version: '${version}'
+
+main: me.duy.minecraftauth.MinecraftAuth
+api-version: '1.21.4'
+load: POSTWORLD
+
+authors: [ NguyenKhanhDuy ]
