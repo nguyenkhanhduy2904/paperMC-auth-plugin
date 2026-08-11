@@ -1,5 +1,5 @@
 name: MinecraftAuth
-version: '${version}'
+version: '1.0-SNAPSHOT'
 
 main: me.duy.minecraftauth.MinecraftAuth
 api-version: '1.21.4'
