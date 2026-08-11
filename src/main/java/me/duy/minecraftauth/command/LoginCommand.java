@@ -31,6 +31,8 @@ public class LoginCommand implements CommandExecutor {
             player.sendMessage("Welcome back: "+ player.getName());
             player.teleport(authManager.getReturnLocation(player));
 
+            authManager.removeLocation(player);
+
         }else{
             player.sendMessage("Login failed!");
         }

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerConnectionListener implements Listener {
     private final AuthManager authManager;
@@ -49,6 +50,18 @@ public class PlayerConnectionListener implements Listener {
             player.sendMessage("You are not registered yet. Use /register <password>");
         }
 
+    }
+
+    @EventHandler
+    public void onPlayerLeft(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+
+        if(!authManager.isAuthenticated(player)){
+
+            player.teleport(authManager.getReturnLocation(player));
+
+        }
+        authManager.unauthenticate(player);
     }
 
 

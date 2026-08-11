@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class AuthManager {
+
     private final Set<UUID> registeredUUID = new HashSet<>();
     private final Set<UUID> authenticatedUUID = new HashSet<>();
     private final Map<UUID, String> passwords = new HashMap<>();
@@ -63,10 +64,13 @@ public class AuthManager {
     }
 
     public void saveReturnLocation(Player player, Location location){
-        lastLocation.put(player.getUniqueId(), location);
+        lastLocation.putIfAbsent(player.getUniqueId(), location);
     }
     public Location getReturnLocation(Player player){
         return lastLocation.get(player.getUniqueId());
+    }
+    public void removeLocation(Player player){
+        lastLocation.remove(player.getUniqueId());
     }
 
 
