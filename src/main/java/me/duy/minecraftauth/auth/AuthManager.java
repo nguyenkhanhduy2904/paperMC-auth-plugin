@@ -1,6 +1,7 @@
 package me.duy.minecraftauth.auth;
 
 import me.duy.minecraftauth.share.ShareValue;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -9,6 +10,7 @@ public class AuthManager {
     private final Set<UUID> registeredUUID = new HashSet<>();
     private final Set<UUID> authenticatedUUID = new HashSet<>();
     private final Map<UUID, String> passwords = new HashMap<>();
+    private final Map<UUID, Location> lastLocation = new HashMap<>();
 
     public AuthManager(){
         UUID testUuid = ShareValue.TEST_UUID;
@@ -49,6 +51,7 @@ public class AuthManager {
             return false;
         }
         authenticate(player);
+
         return true;
     }
 
@@ -57,6 +60,13 @@ public class AuthManager {
     }
     public void unauthenticate(Player player){
         authenticatedUUID.remove(player.getUniqueId());
+    }
+
+    public void saveReturnLocation(Player player, Location location){
+        lastLocation.put(player.getUniqueId(), location);
+    }
+    public Location getReturnLocation(Player player){
+        return lastLocation.get(player.getUniqueId());
     }
 
 

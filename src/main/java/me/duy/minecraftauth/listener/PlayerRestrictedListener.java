@@ -1,5 +1,6 @@
 package me.duy.minecraftauth.listener;
 
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import me.duy.minecraftauth.auth.AuthManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,9 +9,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 public class PlayerRestrictedListener implements Listener {
 
@@ -24,12 +28,7 @@ public class PlayerRestrictedListener implements Listener {
         return !(authManager.isAuthenticated(player));
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {// cant move + look
-        if (!authManager.isAuthenticated(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
+
 
 
     @EventHandler
@@ -53,17 +52,24 @@ public class PlayerRestrictedListener implements Listener {
         }
     }
     @EventHandler
-    public void onDamageByPlayer(EntityDamageByEntityEvent event) {// dealing dmg to others
-        if (event.getDamager() instanceof Player player
-                && !authManager.isAuthenticated(player)) {
+    public void onPlayerMove(PlayerMoveEvent event) {//cant move + look around
+        if (isRestricted(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onPlayerDamage(EntityDamageEvent event) {// taking dmg, inlcude lava or non entity/mob dmg
+    public void onDamageByPlayer(EntityDamageByEntityEvent event) {//cant damage others( include mob)
+        if (event.getDamager() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDamage(EntityDamageEvent event) {//cant take damage (also from non mob like lava or suffocate)
         if (event.getEntity() instanceof Player player
-                && !authManager.isAuthenticated(player)) {
+                && isRestricted(player)) {
             event.setCancelled(true);
         }
     }
@@ -88,6 +94,66 @@ public class PlayerRestrictedListener implements Listener {
         event.setCancelled(true);
         player.sendMessage("You must login first.");
     }
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
+        if (event.getWhoClicked() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event){
+        if (event.getWhoClicked() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event){
+        if (event.getPlayer() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onDropItem(PlayerDropItemEvent event){
+        Player player = event.getPlayer();
+        if (isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPickupItem(EntityPickupItemEvent event) {//walk over pick up
+        if (event.getEntity() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPickItem(PlayerPickItemEvent event) {//pick by using middle mouse
+        if (isRestricted(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onConsumeItem(PlayerItemConsumeEvent event){
+        Player player = event.getPlayer();
+        if (isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent event){
+        if (event.getEntered() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+
 
 
 
