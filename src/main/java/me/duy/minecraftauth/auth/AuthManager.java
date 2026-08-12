@@ -1,40 +1,53 @@
 package me.duy.minecraftauth.auth;
 
+import me.duy.minecraftauth.database.DatabaseManager;
 import me.duy.minecraftauth.share.ShareValue;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class AuthManager {
 
-    private final Set<UUID> registeredUUID = new HashSet<>();
+//    private final Set<UUID> registeredUUID = new HashSet<>();
     private final Set<UUID> authenticatedUUID = new HashSet<>();
     private final Map<UUID, String> passwords = new HashMap<>();
     private final Map<UUID, Location> lastLocation = new HashMap<>();
 
-    public AuthManager(){
-        UUID testUuid = ShareValue.TEST_UUID;
+    private final DatabaseManager databaseManager;
 
-        registeredUUID.add(testUuid);
-        passwords.put(testUuid, "test123");
+    public AuthManager(DatabaseManager databaseManager) throws SQLException {
+        this.databaseManager = databaseManager;
+//        UUID testUuid = ShareValue.TEST_UUID;
+////        registeredUUID.add(testUuid);
+//        passwords.put(testUuid, "test123");
+
+        passwords.putAll(databaseManager.loadPasswordMap());
+
     }
 
     public boolean isRegistered(Player player){
-        return registeredUUID.contains(player.getUniqueId());
+        return passwords.containsKey(player.getUniqueId());
     }
 
     public boolean isAuthenticated(Player player){
         return authenticatedUUID.contains(player.getUniqueId());
     }
 
-    public Boolean register(Player player, String password){
-        if(registeredUUID.contains(player.getUniqueId())){
+    public boolean register(Player player, String password){
+        if(passwords.containsKey(player.getUniqueId())){
             return false;
         }
         else{
+            boolean insertAccount = databaseManager.insertAccount(player.getUniqueId(), password, player.getName());
+
+            if(!insertAccount){
+                return false;
+            }
+
             passwords.put(player.getUniqueId(), password);
-            registeredUUID.add(player.getUniqueId());
+//            registeredUUID.add(player.getUniqueId());
             return true;
         }
     }
@@ -64,7 +77,7 @@ public class AuthManager {
     }
 
     public void saveReturnLocation(Player player, Location location){
-        lastLocation.putIfAbsent(player.getUniqueId(), location);
+        lastLocation.put(player.getUniqueId(), location);
     }
     public Location getReturnLocation(Player player){
         return lastLocation.get(player.getUniqueId());

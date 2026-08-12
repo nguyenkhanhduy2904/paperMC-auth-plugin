@@ -1,6 +1,7 @@
 package me.duy.minecraftauth.command;
 
 import me.duy.minecraftauth.auth.AuthManager;
+import me.duy.minecraftauth.database.DatabaseManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,8 +12,10 @@ public class RegisterCommand implements CommandExecutor {
 
     private final AuthManager authManager;
 
+
     public RegisterCommand(AuthManager authManager) {
         this.authManager = authManager;
+
     }
 
     @Override
@@ -27,7 +30,7 @@ public class RegisterCommand implements CommandExecutor {
         }
         if(authManager.register(player, args[0])){
             player.sendMessage("Registration successful! Now login using /login <password>");
-            
+
         }else{
             player.sendMessage("Register failed!");
         }

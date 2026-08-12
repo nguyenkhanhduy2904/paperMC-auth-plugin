@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 public class PlayerRestrictedListener implements Listener {
@@ -149,6 +150,13 @@ public class PlayerRestrictedListener implements Listener {
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event){
         if (event.getEntered() instanceof Player player
+                && isRestricted(player)) {
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onVehicleDamage(VehicleDamageEvent event) {
+        if (event.getAttacker() instanceof Player player
                 && isRestricted(player)) {
             event.setCancelled(true);
         }

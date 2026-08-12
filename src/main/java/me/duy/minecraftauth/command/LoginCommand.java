@@ -1,6 +1,7 @@
 package me.duy.minecraftauth.command;
 
 import me.duy.minecraftauth.auth.AuthManager;
+import me.duy.minecraftauth.database.DatabaseManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class LoginCommand implements CommandExecutor {
 
     private final AuthManager authManager;
+
 
     public LoginCommand(AuthManager authManager) {
         this.authManager = authManager;
@@ -30,6 +32,7 @@ public class LoginCommand implements CommandExecutor {
             player.sendMessage("Login success!");
             player.sendMessage("Welcome back: "+ player.getName());
             player.teleport(authManager.getReturnLocation(player));
+
 
             authManager.removeLocation(player);
 
