@@ -12,8 +12,11 @@ public class AuthManager {
 
 //    private final Set<UUID> registeredUUID = new HashSet<>();
     private final Set<UUID> authenticatedUUID = new HashSet<>();
+
     private final Map<UUID, String> passwords = new HashMap<>();
     private final Map<UUID, Location> lastLocation = new HashMap<>();
+
+    private final Set<UUID> restrictedUUID = new HashSet<>();
 
     private final DatabaseManager databaseManager;
 
@@ -86,6 +89,18 @@ public class AuthManager {
         lastLocation.remove(player.getUniqueId());
     }
 
+
+    public void restrict(Player player) {
+        restrictedUUID.add(player.getUniqueId());
+    }
+
+    public void unrestrict(Player player) {
+        restrictedUUID.remove(player.getUniqueId());
+    }
+
+    public boolean isManuallyRestricted(Player player) {
+        return restrictedUUID.contains(player.getUniqueId());
+    }
 
 
 

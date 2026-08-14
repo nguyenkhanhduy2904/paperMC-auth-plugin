@@ -3,6 +3,7 @@ package me.duy.minecraftauth;
 import me.duy.minecraftauth.auth.AuthManager;
 import me.duy.minecraftauth.command.LoginCommand;
 import me.duy.minecraftauth.command.RegisterCommand;
+import me.duy.minecraftauth.command.RestrictCommand;
 import me.duy.minecraftauth.database.DatabaseManager;
 import me.duy.minecraftauth.listener.PlayerConnectionListener;
 import me.duy.minecraftauth.listener.PlayerRestrictedListener;
@@ -52,6 +53,14 @@ public final class MinecraftAuth extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("register"))
                 .setExecutor(new RegisterCommand(authManager));
+
+        RestrictCommand restrictCommand = new RestrictCommand(authManager);
+
+        Objects.requireNonNull(getCommand("restrict"))
+                .setExecutor(restrictCommand);
+
+        Objects.requireNonNull(getCommand("unrestrict"))
+                .setExecutor(restrictCommand);
 
         getLogger().info("MinecraftAuth enable");
         // Plugin startup logic

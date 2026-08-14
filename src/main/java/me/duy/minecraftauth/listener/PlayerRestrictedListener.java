@@ -25,8 +25,9 @@ public class PlayerRestrictedListener implements Listener {
         this.authManager = authManager;
     }
 
-    public boolean isRestricted(Player player){
-        return !(authManager.isAuthenticated(player));
+    public boolean isRestricted(Player player) {
+        return !authManager.isAuthenticated(player)
+                || authManager.isManuallyRestricted(player);
     }
 
 
@@ -79,21 +80,29 @@ public class PlayerRestrictedListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (authManager.isAuthenticated(player)) {
+        if (!isRestricted(player)) {
             return;
         }
 
         String message = event.getMessage().toLowerCase();
 
-        if (message.startsWith("/login ")
-                || message.equals("/login")
-                || message.startsWith("/register ")
-                || message.equals("/register")) {
-            return;
+        // Only unauthenticated players need access to these
+        if (!authManager.isAuthenticated(player)) {
+            if (message.startsWith("/login ")
+                    || message.equals("/login")
+                    || message.startsWith("/register ")
+                    || message.equals("/register")) {
+                return;
+            }
         }
 
         event.setCancelled(true);
-        player.sendMessage("You must login first.");
+
+        if (!authManager.isAuthenticated(player)) {
+            player.sendMessage("You must login first.");
+        } else {
+            player.sendMessage("You are currently restricted.");
+        }
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){

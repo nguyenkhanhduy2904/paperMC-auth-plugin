@@ -15,3 +15,18 @@ commands:
   register:
     description: Register an account
     usage: /register <password>
+
+  restrict:
+    description: Restrict a player
+    usage: /restrict <player>
+    permission: minecraftauth.restrict
+
+  unrestrict:
+    description: Unrestrict a player
+    usage: /unrestrict <player>
+    permission: minecraftauth.restrict
+
+permissions:
+  minecraftauth.restrict:
+    description: Allows restricting and unrestricting players
+    default: op
